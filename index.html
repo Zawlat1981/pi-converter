@@ -139,9 +139,11 @@
     </div>
 </div>
 
+<script src="https://sdk.minepi.com/pi-sdk.js"></script>
+
 <script>
-    // ၁။ Pi SDK ကို စတင်အသက်သွင်းခြင်း
-    Pi.init({ version: "2.0", sandbox: false });
+    // ၁။ Pi SDK ကို စတင်အသက်သွင်းခြင်း (sandbox ကို true ပြောင်းထားပါတယ်)
+    Pi.init({ version: "2.0", sandbox: true });
 
     // ၂။ User Identity ကို စစ်ဆေးခြင်း
     async function auth() {
