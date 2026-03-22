@@ -200,8 +200,10 @@
                 metadata: { appId: "global-pi-converter-145d93950f2175d0" } // လူကြီးမင်း၏ App ID
             }, {
                 onReadyForServerApproval: function(paymentId) {
-                    statusDiv.innerText = "Payment created. (ID: " + paymentId + ")";
-                    // Testnet အတွက် အလိုအလျောက် approve လုပ်ဆောင်မှု (Optional logic can go here)
+    statusDiv.innerText = "Payment submitted. Waiting for approval...";
+    // ဒီနေရာမှာ သင့်ရဲ့ Server ဆီ paymentId ပို့ပြီး Approve လုပ်ခိုင်းရမှာဖြစ်ပါတယ်။
+    // Server မရှိရင်တော့ Payment က ပိတ်မိနေပါလိမ့်မယ်။
+},
                 },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     statusDiv.style.color = "green";
