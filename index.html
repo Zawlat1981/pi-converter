@@ -158,19 +158,26 @@
 
     // ၃။ ငွေလဲလှယ်နှုန်း တွက်ချက်ခြင်း
     function calculateExchange() {
-        const amount = document.getElementById('piAmount').value;
-        const rate = document.getElementById('currency').value;
-        const currencySelect = document.getElementById('currency');
-        const currencyLabel = currencySelect.options[currencySelect.selectedIndex].text.split('(')[0].trim();
+    const amount = document.getElementById('piAmount').value;
+    const rate = document.getElementById('currency').value;
+    const currencySelect = document.getElementById('currency');
+    
+    // Label ကို ပိုပြီးရှင်းလင်းစွာ ယူနည်း
+    let label = "Result";
+    if (rate == "314159") label = "GCV";
+    else if (rate == "35") label = "USD";
+    else if (rate == "1200") label = "THB";
+    else if (rate == "120000") label = "MMK";
 
-        if (!amount || amount <= 0) {
-            document.getElementById('result').innerText = "0.00 " + currencyLabel;
-            return;
-        }
-
-        const total = amount * rate;
-        document.getElementById('result').innerText = total.toLocaleString() + " " + currencyLabel;
+    if (!amount || amount <= 0) {
+        document.getElementById('result').innerText = "0.00 " + label;
+        return;
     }
+
+    const total = amount * rate;
+    document.getElementById('result').innerText = total.toLocaleString() + " " + label;
+}
+
 
     // ၄။ Pi လွှဲပြောင်းခြင်း (လူကြီးမင်း၏ App ID ကို အစားထိုးထားပါသည်)
     async function transferPi() {
