@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Global Pi Converter | Mainnet App</title>
-    <script src="https://sdk.mine.pi/pi-sdk.js"></script>
+    <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         :root {
             --pi-purple: #673ab7;
@@ -51,6 +51,7 @@
             font-weight: 600; 
             color: var(--pi-purple);
             border: 1px solid #d1c4e9;
+            min-height: 45px;
         }
 
         .input-group { margin-bottom: 20px; text-align: left; }
@@ -93,7 +94,7 @@
         }
         .btn-pay:hover { background: #512da8; transform: translateY(-2px); }
         
-        #status { margin-top: 15px; font-size: 13px; text-align: center; min-height: 20px; }
+        #status { margin-top: 15px; font-size: 13px; text-align: center; min-height: 40px; }
         .footer { text-align: center; padding: 20px; font-size: 11px; color: #bbb; text-transform: uppercase; }
     </style>
 </head>
@@ -127,7 +128,7 @@
 
         <div class="result-box">
             <small>Estimated Value</small>
-            <div id="result" class="result-text">0.00 Result</div>
+            <div id="result" class="result-text">0.00 GCV</div>
         </div>
 
         <button class="btn-pay" onclick="transferPi()">Transfer Pi</button>
@@ -139,10 +140,8 @@
     </div>
 </div>
 
-<script src="https://sdk.minepi.com/pi-sdk.js"></script>
-
 <script>
-    // ၁။ Pi SDK ကို စတင်အသက်သွင်းခြင်း (sandbox ကို true ပြောင်းထားပါတယ်)
+    // ၁။ Pi SDK ကို စတင်အသက်သွင်းခြင်း (sandbox ကို true ထားပါသည်)
     Pi.init({ version: "2.0", sandbox: true });
 
     // ၂။ User Identity ကို စစ်ဆေးခြင်း
@@ -157,7 +156,7 @@
         }
     }
 
-    // ၃။ ငွေလဲလှယ်နှုန်း တွက်ချက်ခြင်း (သင်မေးထားသော logic)
+    // ၃။ ငွေလဲလှယ်နှုန်း တွက်ချက်ခြင်း
     function calculateExchange() {
         const amount = document.getElementById('piAmount').value;
         const rate = document.getElementById('currency').value;
@@ -170,13 +169,13 @@
         }
 
         const total = amount * rate;
-        //toLocaleString() သုံးထားလို့ ကော်မာ (,) လေးတွေနဲ့ လှလှပပ ပေါ်ပါလိမ့်မယ်
         document.getElementById('result').innerText = total.toLocaleString() + " " + currencyLabel;
     }
 
-    // ၄။ Pi လွှဲပြောင်းခြင်း (Payment)
+    // ၄။ Pi လွှဲပြောင်းခြင်း (လူကြီးမင်း၏ App ID ကို အစားထိုးထားပါသည်)
     async function transferPi() {
-        const amount = parseFloat(document.getElementById('piAmount').value);
+        const amountInput = document.getElementById('piAmount').value;
+        const amount = parseFloat(amountInput);
         const statusDiv = document.getElementById('status');
 
         if(!amount || amount <= 0) {
@@ -185,17 +184,17 @@
         }
 
         statusDiv.style.color = "blue";
-        statusDiv.innerText = "Processing payment...";
+        statusDiv.innerText = "Initializing payment...";
 
         try {
             const payment = await Pi.createPayment({
                 amount: amount,
-                memo: "Conversion: " + amount + " Pi to Global Currency",
-                metadata: { type: "conversion_app" }
+                memo: "Conversion Test: " + amount + " Pi",
+                metadata: { appId: "global-pi-converter-145d93950f2175d0" } // လူကြီးမင်း၏ App ID
             }, {
                 onReadyForServerApproval: function(paymentId) {
-                    statusDiv.innerText = "Waiting for server to approve (ID: " + paymentId + ")";
-                    // ဒီနေရာမှာ သင့်ရဲ့ Backend Server ဆီ ID ပို့ရမှာဖြစ်ပါတယ်
+                    statusDiv.innerText = "Payment created. (ID: " + paymentId + ")";
+                    // Testnet အတွက် အလိုအလျောက် approve လုပ်ဆောင်မှု (Optional logic can go here)
                 },
                 onReadyForServerCompletion: function(paymentId, txid) {
                     statusDiv.style.color = "green";
@@ -203,7 +202,7 @@
                 },
                 onCancel: function(paymentId) { 
                     statusDiv.style.color = "orange";
-                    statusDiv.innerText = "Payment Cancelled by user."; 
+                    statusDiv.innerText = "Payment Cancelled."; 
                 },
                 onError: function(error, payment) { 
                     statusDiv.style.color = "red";
@@ -212,17 +211,18 @@
             });
         } catch (err) {
             console.error(err);
-            statusDiv.innerText = "Payment failed to initialize.";
+            statusDiv.style.color = "red";
+            statusDiv.innerText = "Payment failed to initialize. Check Pi Browser.";
         }
     }
 
     function onIncompletePaymentFound(payment) {
-        console.log("Found incomplete payment:", payment);
+        console.log("Incomplete payment:", payment);
     }
 
-    // App စဖွင့်တာနဲ့ Auth ကို ခေါ်မယ်
+    // App စဖွင့်သည်နှင့် Auth ကို စစ်ဆေးပါမည်
     auth();
 </script>
 
 </body>
-</html> 
+</html>
