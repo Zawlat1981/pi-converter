@@ -3,99 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Global Pi Converter | Mainnet App</title>
+    <title>Global Pi Converter | Live Rates</title>
     <script src="https://sdk.minepi.com/pi-sdk.js"></script>
     <style>
         :root {
             --pi-purple: #673ab7;
             --pi-gold: #ffc107;
             --bg-color: #f0f2f5;
-            --text-dark: #333;
         }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--bg-color); 
-            margin: 0; 
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100vh; 
-        }
-        .app-card { 
-            background: white; 
-            width: 90%; 
-            max-width: 400px; 
-            border-radius: 20px; 
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); 
-            overflow: hidden; 
-        }
-        .header { 
-            background: var(--pi-purple); 
-            color: white; 
-            padding: 25px; 
-            text-align: center; 
-        }
-        .header img { width: 60px; margin-bottom: 10px; }
-        .header h2 { margin: 0; font-size: 22px; letter-spacing: 1px; }
-        
-        .content { padding: 25px; }
-        
-        .user-section { 
-            background: #f0ebf7; 
-            border-radius: 12px; 
-            padding: 12px; 
-            margin-bottom: 20px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-weight: 600; 
-            color: var(--pi-purple);
-            border: 1px solid #d1c4e9;
-            min-height: 45px;
-        }
-
-        .input-group { margin-bottom: 20px; text-align: left; }
-        label { display: block; margin-bottom: 8px; color: #555; font-size: 14px; font-weight: bold; }
-        input, select { 
-            width: 100%; 
-            padding: 14px; 
-            border: 2px solid #eee; 
-            border-radius: 10px; 
-            box-sizing: border-box; 
-            font-size: 16px; 
-            transition: 0.3s;
-        }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-color); margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .app-card { background: white; width: 92%; max-width: 400px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); overflow: hidden; }
+        .header { background: var(--pi-purple); color: white; padding: 25px; text-align: center; }
+        .header img { width: 55px; margin-bottom: 8px; }
+        .header h2 { margin: 0; font-size: 20px; }
+        .content { padding: 20px; }
+        .user-section { background: #f3e5f5; border-radius: 12px; padding: 10px; margin-bottom: 15px; text-align: center; font-weight: bold; color: var(--pi-purple); border: 1px solid #d1c4e9; }
+        .live-price { font-size: 13px; color: #2e7d32; margin-bottom: 15px; text-align: center; font-weight: bold; background: #e8f5e9; padding: 10px; border-radius: 10px; }
+        .input-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-size: 13px; font-weight: bold; color: #666; }
+        input, select { width: 100%; padding: 12px; border: 2px solid #eee; border-radius: 10px; box-sizing: border-box; font-size: 16px; transition: 0.3s; }
         input:focus { border-color: var(--pi-purple); outline: none; }
-
-        .result-box { 
-            background: #fff9c4; 
-            border: 2px dashed #fbc02d; 
-            padding: 20px; 
-            border-radius: 12px; 
-            margin-top: 10px; 
-            text-align: center; 
-        }
-        .result-box small { display: block; color: #7f8c8d; margin-bottom: 5px; }
-        .result-text { font-size: 24px; font-weight: 800; color: #d35400; }
-
-        .btn-pay { 
-            background: var(--pi-purple); 
-            color: white; 
-            border: none; 
-            width: 100%; 
-            padding: 16px; 
-            border-radius: 12px; 
-            font-size: 18px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            margin-top: 20px;
-            box-shadow: 0 4px 15px rgba(103, 58, 183, 0.3);
-        }
-        .btn-pay:hover { background: #512da8; transform: translateY(-2px); }
-        
-        #status { margin-top: 15px; font-size: 13px; text-align: center; min-height: 40px; }
-        .footer { text-align: center; padding: 20px; font-size: 11px; color: #bbb; text-transform: uppercase; }
+        .rate-box { background: #fff3e0; border: 1px solid #ffe0b2; padding: 10px; border-radius: 10px; margin-bottom: 15px; }
+        .result-box { background: #fff9c4; border: 2px dashed #fbc02d; padding: 15px; border-radius: 12px; text-align: center; margin-top: 10px; }
+        .result-text { font-size: 26px; font-weight: 800; color: #e67e22; }
+        .btn-pay { background: var(--pi-purple); color: white; border: none; width: 100%; padding: 16px; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; margin-top: 20px; box-shadow: 0 4px 10px rgba(103, 58, 183, 0.3); }
+        .footer { text-align: center; padding: 15px; font-size: 10px; color: #999; }
     </style>
 </head>
 <body>
@@ -111,122 +43,135 @@
             <span id="username">Checking Pi Identity...</span>
         </div>
 
+        <div id="live-price-display" class="live-price">Loading Market Rates...</div>
+
+        <div class="rate-box">
+            <label>Today's TrueMoney Rate (1 THB = ??? MMK)</label>
+            <input type="number" id="manualThbToMmk" value="138.0" step="0.1" oninput="calculateExchange()" style="background: white; border-color: #ffcc80;">
+        </div>
+
         <div class="input-group">
             <label>Amount in Pi (π)</label>
-            <input type="number" id="piAmount" placeholder="Enter Pi amount" oninput="calculateExchange()">
+            <input type="number" id="piAmount" placeholder="0.00" oninput="calculateExchange()">
         </div>
 
         <div class="input-group">
             <label>Convert To</label>
             <select id="currency" onchange="calculateExchange()">
+                <option value="bitget">Bitget Market Price (USDT)</option>
                 <option value="314159">GCV ($314,159 USD)</option>
-                <option value="35">Market Rate (Approx. $35 USD)</option>
-                <option value="1200">Thai Baht (THB)</option>
-                <option value="120000">Myanmar Kyat (MMK)</option>
+                <option value="THB">Thai Baht (Live Rate)</option>
+                <option value="MMK">Myanmar Kyat (TrueMoney)</option>
             </select>
         </div>
 
         <div class="result-box">
             <small>Estimated Value</small>
-            <div id="result" class="result-text">0.00 GCV</div>
+            <div id="result" class="result-text">0.00 USDT</div>
         </div>
 
         <button class="btn-pay" onclick="transferPi()">Transfer Pi</button>
         <div id="status"></div>
     </div>
-
-    <div class="footer">
-        Verified Pi Mainnet Application
-    </div>
+    <div class="footer">Verified Pi Mainnet Application</div>
 </div>
 
 <script>
-    // ၁။ Pi SDK ကို စတင်အသက်သွင်းခြင်း
+    let currentPiPrice = 0;
+    let usdToThb = 36.30; 
+
+    // Pi SDK စတင်ခြင်း
     Pi.init({ version: "2.0", sandbox: false });
 
-    // ၂။ User Identity ကို စစ်ဆေးခြင်း
+    async function updateCurrencyRates() {
+        try {
+            const res = await fetch('https://open.er-api.com/v6/latest/USD');
+            const data = await res.json();
+            if (data.result === "success") {
+                usdToThb = data.rates.THB;
+                updatePriceDisplay();
+            }
+        } catch (e) { console.error(e); }
+    }
+
+    async function updatePiPrice() {
+        try {
+            const res = await fetch('https://api.bitget.com/api/v2/spot/market/tickers?symbol=PIUSDT');
+            const data = await res.json();
+            if (data.code === '00000') {
+                currentPiPrice = parseFloat(data.data[0].lastPr);
+                updatePriceDisplay();
+                calculateExchange();
+            }
+        } catch (e) { document.getElementById('live-price-display').innerText = "Price Update Failed"; }
+    }
+
+    function updatePriceDisplay() {
+        document.getElementById('live-price-display').innerText = `Pi: ${currentPiPrice} USDT | 1$ ≈ ${usdToThb.toFixed(2)} THB`;
+    }
+
     async function auth() {
         try {
             const scopes = ['username', 'payments'];
-            const authResult = await Pi.authenticate(scopes, onIncompletePaymentFound);
+            const authResult = await Pi.authenticate(scopes, (p) => console.log(p));
             document.getElementById('username').innerText = "👤 " + authResult.user.username;
-        } catch (err) {
-            document.getElementById('username').innerText = "Please open in Pi Browser";
-            console.error(err);
-        }
+        } catch (err) { document.getElementById('username').innerText = "Open in Pi Browser"; }
     }
 
-    // ၃။ ငွေလဲလှယ်နှုန်း တွက်ချက်ခြင်း
     function calculateExchange() {
         const amount = document.getElementById('piAmount').value;
-        const rate = document.getElementById('currency').value;
+        const mode = document.getElementById('currency').value;
+        const thbToMmk = document.getElementById('manualThbToMmk').value; 
+        const resultDisplay = document.getElementById('result');
         
-        let label = "Result";
-        if (rate == "314159") label = "GCV";
-        else if (rate == "35") label = "USD";
-        else if (rate == "1200") label = "THB";
-        else if (rate == "120000") label = "MMK";
+        let total = 0;
+        let label = "";
+
+        if (mode === "bitget") {
+            total = amount * currentPiPrice;
+            label = "USDT";
+        } else if (mode === "314159") {
+            total = amount * 314159;
+            label = "GCV ($)";
+        } else if (mode === "THB") {
+            total = amount * currentPiPrice * usdToThb;
+            label = "THB";
+        } else if (mode === "MMK") {
+            total = amount * currentPiPrice * usdToThb * thbToMmk;
+            label = "MMK";
+        }
 
         if (!amount || amount <= 0) {
-            document.getElementById('result').innerText = "0.00 " + label;
+            resultDisplay.innerText = "0.00 " + label;
             return;
         }
-
-        const total = amount * rate;
-        document.getElementById('result').innerText = total.toLocaleString() + " " + label;
+        resultDisplay.innerText = total.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2}) + " " + label;
     }
 
-    // ၄။ Pi လွှဲပြောင်းခြင်း
     async function transferPi() {
-        const amountInput = document.getElementById('piAmount').value;
-        const amount = parseFloat(amountInput);
-        const statusDiv = document.getElementById('status');
-
-        if(!amount || amount <= 0) {
-            alert("Please enter a valid Pi amount");
-            return;
-        }
-
-        statusDiv.style.color = "blue";
-        statusDiv.innerText = "Initializing payment...";
-
+        const amount = parseFloat(document.getElementById('piAmount').value);
+        if(!amount || amount <= 0) { alert("Please enter a valid amount"); return; }
+        
+        // Pi Payment Logic
         try {
-            const payment = await Pi.createPayment({
+            await Pi.createPayment({
                 amount: amount,
-                memo: "Conversion Test: " + amount + " Pi",
+                memo: "Pi Conversion",
                 metadata: { appId: "global-pi-converter-145d93950f2175d0" }
             }, {
-                onReadyForServerApproval: function(paymentId) {
-                    statusDiv.innerText = "Payment submitted. Waiting for approval...";
-                },
-                onReadyForServerCompletion: function(paymentId, txid) {
-                    statusDiv.style.color = "green";
-                    statusDiv.innerHTML = "<b>Success!</b><br>TXID: " + txid;
-                },
-                onCancel: function(paymentId) { 
-                    statusDiv.style.color = "orange";
-                    statusDiv.innerText = "Payment Cancelled."; 
-                },
-                onError: function(error, payment) { 
-                    statusDiv.style.color = "red";
-                    statusDiv.innerText = "Error: " + error.message; 
-                }
+                onReadyForServerApproval: (id) => console.log("Waiting for approval"),
+                onReadyForServerCompletion: (id, txid) => alert("Success! TXID: " + txid),
+                onCancel: (id) => console.log("Cancelled"),
+                onError: (error) => console.error(error)
             });
-        } catch (err) {
-            console.error(err);
-            statusDiv.style.color = "red";
-            statusDiv.innerText = "Payment failed to initialize. Check Pi Browser.";
-        }
+        } catch (err) { alert("Use Pi Browser for payments."); }
     }
 
-    function onIncompletePaymentFound(payment) {
-        console.log("Incomplete payment:", payment);
-    }
-
-    // App စဖွင့်သည်နှင့် Auth ကို စစ်ဆေးပါမည်
     auth();
+    updateCurrencyRates();
+    updatePiPrice();
+    setInterval(updatePiPrice, 60000); 
 </script>
 
 </body>
 </html>
->
